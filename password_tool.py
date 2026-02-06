@@ -51,7 +51,49 @@ def check_password_strength(password):
     Hint: Use .isdigit(), .isupper(), .islower() and string.punctuation
     """
     # TODO: Implement this function
-    pass
+    counter = 0
+    # - 8+ characters: 20 points
+    if len(password) >= 8 and len(password)< 12:
+        counter += 20
+    # - 12+ characters: 30 points (instead of 20)
+    if len(password) >= 12:
+        counter += 30
+    # - Has number: 20 points
+    if any([x.isdigit() for x in password]):
+        counter += 20
+    # - Has uppercase: 20 points
+    if any([x.isupper() for x in password]):
+        counter += 20
+    # - Has lowercase: 20 points
+    if any([x.islower() for x in password]):
+        counter += 20
+    # - Has special char (!@#$%): 20 points
+    if any(x in ['(', '!', '@', '#', '$', '%', "'", ')', ':'] for x in password):
+        counter += 20
+    # - Not in common list: 10 points
+    if password not in COMMON_PASSWORDS:
+        counter += 10
+
+
+    strength = ''
+    # Strength levels:
+    # - 0-39: "Weak"
+    # - 40-69: "Medium"
+    # - 70-100: "Strong"
+    if 0 <= counter <= 39:
+        strength = 'Weak'
+    if 39 < counter < 70:
+        strength = 'Medium'
+    if 70 <= counter:
+        strength = 'Strong'
+
+    return {
+        'password': password,
+        'score': counter,
+        'strength': strength,
+        'feedback': 0
+
+    }
 
 
 # ============================================
@@ -83,7 +125,16 @@ def generate_password(length=12, use_special=True):
           string.digits, and random.choice()
     """
     # TODO: Implement this function
-    pass
+    upper = string.ascii_uppercase
+    lower = string.ascii_lowercase
+    nums = string.digits
+    special = ['(', '!', '@', '#', '$', '%', "'", ')', ':']
+    if length < 8:
+        return random.choice(upper) + random.choice(nums) + random.choice(lower) + ''.join(random.choices(lower, k=5))
+    if use_special:
+        return random.choice(upper) + random.choice(nums) + random.choice(lower) + random.choice(special) + ''.join(random.choices(lower, k=length - 4))
+    return random.choice(upper) + random.choice(nums) + random.choice(lower) + ''.join(random.choices(lower, k=length - 3))
+    
 
 
 # ============================================
